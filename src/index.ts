@@ -4,7 +4,7 @@ import serverconfig from './config/server.config';
 import apiRouter from "./routes";
 import SampleWorker from "./worker/SampleWorker";
 import bullBoardAdapter from "./config/boardConfig";
-
+import runPython from "./containers/runPythonDocker"
 const app: Express = express();
 
 app.use(bodyParser.urlencoded());
@@ -17,5 +17,9 @@ app.listen(serverconfig.PORT,() => {
     console.log(`Server has been started at ${serverconfig.PORT}`);
     console.log(`BullBoard dashboard running on: http://localhost:${serverconfig.PORT}/ui`);
     SampleWorker('SampleQueue');
-    
+    const code = `
+    x = 10
+    print("value of x is", x)
+    `;
+    runPython(code,"10");
 })
