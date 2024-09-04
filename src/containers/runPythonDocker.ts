@@ -27,13 +27,17 @@ async function runPython(code: string, inputTestCase: string){
         rawLogBuffer.push(chunk);
     });
     // When all logs in the code is finished
-    loggerStream.on('end' ,() => {
-        console.log(rawLogBuffer);
-        const completeBuffer = Buffer.concat(rawLogBuffer);
-        const decodedStream = decodeDockerStream(completeBuffer);
-        console.log(decodedStream);
-        console.log(decodedStream.stdout)
-    })
+    await new Promise((res) => {
+        loggerStream.on('end' ,() => {
+            console.log(rawLogBuffer);
+            const completeBuffer = Buffer.concat(rawLogBuffer);
+            const decodedStream = decodeDockerStream(completeBuffer);
+            console.log(decodedStream);
+            console.log(decodedStream.stdout);
+            res(decodeDockerStream);
+        });
+    });
+    await pythonDockerContainer.remove();
 
     return pythonDockerContainer;
 }
