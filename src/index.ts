@@ -4,7 +4,8 @@ import serverconfig from './config/server.config';
 import apiRouter from "./routes";
 import SampleWorker from "./worker/SampleWorker";
 import bullBoardAdapter from "./config/boardConfig";
-import runPython from "./containers/runPythonDocker"
+// import runPython from "./containers/runPythonDocker"
+import runJava from "./containers/runJavaDocker";
 const app: Express = express();
 
 app.use(bodyParser.urlencoded());
@@ -18,8 +19,18 @@ app.listen(serverconfig.PORT,() => {
     console.log(`BullBoard dashboard running on: http://localhost:${serverconfig.PORT}/ui`);
     SampleWorker('SampleQueue');
     const code = `
-    x = 10
-    print("value of x is", x)
+    import java.util.*;
+        public class Main {
+        public static void main(String[] args) {
+        Scanner scn = new Scanner(System.in);
+        int input = scn.nextInt();
+        System.out.println("input value given by user: " + input);
+        for(int i = 0; i < input; i++) {
+        System.out.println(i);
+        }
+    }
+  }
     `;
-    runPython(code,"10");
+    const inputCase  =`10`;
+    runJava(code,inputCase);
 })
